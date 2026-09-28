@@ -1,0 +1,52 @@
+.users-shell { max-width: 1120px; margin: 0 auto; padding: 38px 24px 70px; }
+.users-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+.users-heading h1 { margin: 6px 0 7px; color: #17233c; font-size: 34px; font-weight: 800; letter-spacing: -.03em; }
+.users-heading p { margin: 0; color: #718096; font-size: 14px; }
+.users-add-button { border: 0; cursor: pointer; }
+.credential-banner { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 20px; padding: 20px; border: 1px solid #a7f3d0; border-radius: 14px; background: #ecfdf5; }
+.credential-banner > div { display: flex; align-items: center; gap: 12px; }
+.credential-banner strong { color: #065f46; font-size: 14px; }
+.credential-banner p { margin: 3px 0 0; color: #438070; font-size: 11px; }
+.credential-banner dl { display: flex; gap: 22px; margin: 0; }
+.credential-banner dl div { min-width: 120px; }
+.credential-banner dt { color: #5f8d80; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.credential-banner dd { margin: 3px 0 0; color: #064e3b; font-family: monospace; font-size: 13px; font-weight: 700; }
+.user-form { margin-bottom: 20px; padding: 24px; border: 1px solid #dbe4f0; border-radius: 16px; background: #fff; box-shadow: 0 10px 28px rgba(15,23,42,.045); }
+.user-form__heading h2 { margin: 0; color: #1d2a43; font-size: 18px; font-weight: 800; }
+.user-form__heading p { margin: 4px 0 20px; color: #8491a5; font-size: 12px; }
+.user-form__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.user-form__grid .field:last-child { grid-column: 1 / -1; }
+.user-form__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.form-error { margin-bottom: 16px; padding: 10px 12px; border-radius: 8px; background: #fef2f2; color: #b91c1c; font-size: 12px; }
+.users-panel { overflow: hidden; border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; box-shadow: 0 10px 30px rgba(15,23,42,.04); }
+.users-panel__heading { display: flex; align-items: center; justify-content: space-between; padding: 21px 24px; border-bottom: 1px solid #e9eef5; }
+.users-panel__heading h2 { margin: 0; color: #1d2a43; font-size: 18px; font-weight: 800; }
+.users-panel__heading p { margin: 4px 0 0; color: #8995a8; font-size: 11px; }
+.users-panel__status { color: #059669; font-size: 11px; font-weight: 700; }
+.users-table-wrap { overflow-x: auto; }
+.users-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+.users-table th { padding: 12px 20px; background: #f8fafc; color: #7a879a; font-size: 10px; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+.users-table td { padding: 15px 20px; border-top: 1px solid #edf1f6; color: #64748b; font-size: 12px; }
+.users-table tbody tr:hover { background: #fbfdff; }
+.user-cell { display: flex; align-items: center; gap: 10px; }
+.user-cell > span { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: #ffe1f2; color: #c90078; font-weight: 800; }
+.user-cell strong { color: #334155; font-size: 13px; }
+.users-table code { padding: 4px 6px; border-radius: 5px; background: #f1f5f9; color: #475569; }
+.role-badge { padding: 5px 8px; border-radius: 20px; background: #e2e8f0; color: #475569; font-size: 10px; font-weight: 700; }
+.role-badge--admin { background: #fee2e2; color: #b91c1c; }
+.role-badge--instructor { background: #ede9fe; color: #6d28d9; }
+.role-badge--user { background: #ffe1f2; color: #c90078; }
+.users-table__action { text-align: right; }
+.delete-user { border: 0; background: transparent; color: #dc2626; font-size: 11px; font-weight: 700; cursor: pointer; }
+.edit-user { margin-right: 12px; border: 0; background: transparent; color: #ec008c; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+@media (max-width: 680px) {
+  .users-shell { padding: 26px 16px 50px; }
+  .users-heading { align-items: flex-start; flex-direction: column; }
+  .users-heading h1 { font-size: 28px; }
+  .users-add-button { width: 100%; justify-content: center; }
+  .credential-banner { align-items: flex-start; flex-direction: column; }
+  .credential-banner dl { width: 100%; flex-direction: column; gap: 10px; }
+  .user-form__grid { grid-template-columns: 1fr; }
+  .user-form__grid .field:last-child { grid-column: auto; }
+}

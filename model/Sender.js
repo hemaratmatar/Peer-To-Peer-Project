@@ -27,4 +27,4 @@ const senderSchema = new mongoose.Schema({
   }
 });
 
-module.exports = Sender = mongoose.model("sender", senderSchema);
+module.exports = mongoose.model("sender", senderSchema);

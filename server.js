@@ -1,8 +1,8 @@
+process.loadEnvFile();
+
 const express = require('express');
 const connectDB = require('./config/db');
 const app = express();
-
-connectDB();
 
 app.use(express.json({extended: false}));
 app.get('/',(req,res)=> res.send('API Running'));
@@ -15,4 +15,15 @@ app.use('/api/resever',require('./router/api/reserver'));
 app.use('/api/sender',require('./router/api/sender'));
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, ()=> console.log(`server Started on port ${PORT}`));
+
+const start = async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, ()=> console.log(`server Started on port ${PORT}`));
+    } catch {
+        console.log('Retrying MongoDB connection in 5 seconds...');
+        setTimeout(start, 5000);
+    }
+};
+
+start();

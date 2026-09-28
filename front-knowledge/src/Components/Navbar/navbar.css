@@ -1,4 +1,108 @@
-.ab {
-    background-color: #EC008C;
-    color: #eeeeee;
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid #e5eaf2;
+  backdrop-filter: blur(14px);
+}
+
+.app-navbar__inner {
+  max-width: 1240px;
+  min-height: 72px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: #3b1830;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.app-brand:hover { color: #3b1830; text-decoration: none; }
+
+.app-brand strong,
+.app-brand small { display: block; line-height: 1.2; }
+.app-brand strong { font-size: 16px; }
+.app-brand small { margin-top: 3px; color: #7a879c; font-size: 10px; letter-spacing: .06em; }
+
+.app-navbar__menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex: 1;
+}
+
+.app-navbar__links { display: flex; align-items: center; gap: 6px; }
+
+.app-navbar__links a {
+  padding: 10px 13px;
+  border-radius: 9px;
+  color: #55627a;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app-navbar__links a:hover,
+.app-navbar__links a.is-active { color: #ec008c; background: #fff0f8; text-decoration: none; }
+
+.app-navbar__account { display: flex; align-items: center; gap: 10px; }
+
+.app-navbar__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ffe1f2;
+  color: #c90078;
+  font-weight: 800;
+}
+
+.app-navbar__identity strong,
+.app-navbar__identity small { display: block; line-height: 1.25; }
+.app-navbar__identity strong { color: #1e293b; font-size: 13px; }
+.app-navbar__identity small { color: #8491a6; font-size: 11px; }
+
+.app-navbar__logout {
+  margin-left: 4px;
+  padding: 8px 11px;
+  border: 1px solid #dce3ed;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app-navbar__logout:hover { color: #dc2626; border-color: #fecaca; text-decoration: none; }
+.app-navbar__toggle { display: none; }
+
+@media (max-width: 860px) {
+  .app-navbar__inner { min-height: 64px; padding: 0 18px; justify-content: space-between; }
+  .app-navbar__toggle { display: block; padding: 8px 10px; border: 1px solid #f4a3d3; border-radius: 8px; background: #fff0f8; color: #c90078; font-size: 12px; font-weight: 700; }
+  .app-navbar__menu {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    padding: 18px;
+    background: #fff;
+    border-bottom: 1px solid #e5eaf2;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, .08);
+  }
+  .app-navbar__menu.is-open { display: block; }
+  .app-navbar__links { align-items: stretch; flex-direction: column; }
+  .app-navbar__account { margin-top: 14px; padding-top: 14px; border-top: 1px solid #edf1f6; }
+  .app-navbar__logout { margin-left: auto; }
 }

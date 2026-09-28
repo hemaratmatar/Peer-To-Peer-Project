@@ -6,13 +6,20 @@ import { connect } from 'react-redux';
 const PrivateRoute = ({
   component: Component,
   auth: { isAuthenticated, loading },
+  authUser,
+  adminOnly = false,
+  managerOnly = false,
   ...rest
 }) => (
   <Route
     {...rest}
     render={props =>
-      !isAuthenticated && !loading ? (
+      loading ? null : !isAuthenticated ? (
         <Redirect to='/' />
+      ) : adminOnly && (!authUser || authUser.role !== 'admin') ? (
+        <Redirect to='/home' />
+      ) : managerOnly && (!authUser || !['admin', 'instructor'].includes(authUser.role)) ? (
+        <Redirect to='/home' />
       ) : (
         <Component {...props} />
       )
@@ -25,7 +32,8 @@ PrivateRoute.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  authUser: state.auth.user
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

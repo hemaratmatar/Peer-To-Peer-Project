@@ -1,19 +1,22 @@
 const mongoose = require('mongoose');
-const config = require('config');
-const db = config.get('mongoURI');
+const db = process.env.MONGODB_URI;
 
 const connectDB = async ()=>{
     try{
+        if (!db) throw new Error('MONGODB_URI is missing from .env');
+
         await mongoose.connect(db,{
+            dbName: process.env.MONGODB_DB || 'knowlegegsb',
             useNewUrlParser: true,
             useCreateIndex: true,
             useFindAndModify:false,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 5000
         });
         console.log("MongoDB Connected..");
     }catch(err){
-        console.error(err.massege);
-        process.exit(1);
+        console.error(`MongoDB connection failed: ${err.message}`);
+        throw err;
     }
 };
 

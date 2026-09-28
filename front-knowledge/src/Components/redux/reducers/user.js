@@ -1,11 +1,11 @@
 import {
-	GET_ALLUSER,CLEAR_USER,USER_ERROR
+	GET_ALLUSER,CLEAR_USER,USER_ERROR,USER_CREATED,USER_DELETED,USER_UPDATED
 } from '../action/types';
 
 const initialState = {
 	user: null,
 	users: [],
-	repos: [],
+	credentials: null,
 	loading: true,
 	error: {}
 };
@@ -20,6 +20,26 @@ export default function(state = initialState, action) {
 				users: payload,
 				loading: false
 			};
+		case USER_CREATED:
+			return {
+				...state,
+				users: [...state.users, payload.user],
+				credentials: payload.credentials,
+				loading: false
+			};
+		case USER_DELETED:
+			return {
+				...state,
+				users: state.users.filter(user => user._id !== payload && user.id !== payload),
+				loading: false
+			};
+		case USER_UPDATED:
+			return {
+				...state,
+				users: state.users.map(user => (user._id || user.id) === (payload._id || payload.id) ? payload : user),
+				credentials: null,
+				loading: false
+			};
 		case USER_ERROR:
 			return {
 				...state,
@@ -31,7 +51,7 @@ export default function(state = initialState, action) {
 			return{
 				...state,
 				user:null,
-				repos:[],
+				credentials:null,
 				loading: false
 			};
 		default:

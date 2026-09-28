@@ -2,35 +2,37 @@
   "name": "knowlege-api",
   "version": "1.0.0",
   "description": "",
+  "private": true,
+  "workspaces": [
+    "front-knowledge"
+  ],
+  "engines": {
+    "node": "24.21.0",
+    "npm": "11.19.0"
+  },
+  "packageManager": "npm@11.19.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
-    "server": "nodemon server",
-    "client": "npm start --prefix front-knowledge",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "test": "node --test test/coursePermissions.test.js test/dependencyLock.test.js",
+    "start": "node --no-deprecation server",
+    "server": "nodemon --exec \"node --no-deprecation\" server",
+    "client": "npm start --workspace front-knowledge",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm run build --workspace front-knowledge",
+    "test:client": "npm test --workspace front-knowledge -- --watchAll=false"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "antd": "^3.26.8",
-    "babel-plugin-import": "^1.13.0",
-    "bcryptjs": "^2.4.3",
-    "config": "^3.2.5",
-    "customize-cra": "^0.9.1",
-    "express": "^4.17.1",
-    "express-validator": "^6.3.1",
-    "gravatar": "^1.8.0",
-    "jsonwebtoken": "^8.5.1",
-    "less": "^3.10.3",
-    "less-loader": "^5.0.0",
-    "mongoose": "^5.8.9",
-    "react-app-rewired": "^2.1.5",
-    "request": "^2.88.0",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.88.2"
+    "bcryptjs": "2.4.3",
+    "config": "3.2.5",
+    "express": "4.17.1",
+    "express-validator": "6.4.0",
+    "jsonwebtoken": "8.5.1",
+    "mongoose": "5.8.11"
   },
   "devDependencies": {
-    "concurrently": "^5.0.2",
-    "nodemon": "^2.0.2"
+    "concurrently": "5.1.0",
+    "nodemon": "2.0.2"
   }
 }

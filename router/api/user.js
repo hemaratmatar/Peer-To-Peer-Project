@@ -1,83 +1,103 @@
-const express = require("express");
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const { randomBytes } = require('crypto');
+const { check, validationResult } = require('express-validator');
+const auth = require('../../Middleware/auth');
+const admin = require('../../Middleware/admin');
+const User = require('../../model/User');
+
 const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { check, validationResult } = require("express-validator");
-const config = require("config");
 
-const User = require("../../model/User");
+const validateUser = [
+  check('name', 'Name is required').not().isEmpty(),
+  check('username', 'Username is required').not().isEmpty(),
+  check('password', 'Password must contain at least 6 characters').optional({ checkFalsy: true }).isLength({ min: 6 }),
+  check('uid', 'User ID is required').not().isEmpty(),
+  check('role', 'Role is invalid').isIn(['admin', 'instructor', 'user'])
+];
 
-router.post(
-  "/",
-  [
-    check("name", "Name is Required")
-      .not()
-      .isEmpty(),
-    check("username", "Please include a valid Username")
-      .not()
-      .isEmpty(),
-    check(
-      "password",
-      "please enter a Password with 6 or more characters"
-    ).isLength({ min: 6 })
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { name, username, password, uid } = req.body;
-
-    try {
-      //see if user exists
-      let user = await User.findOne({ username });
-      if (user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
-      }
-
-      user = new User({
-        name,
-        username,
-        password,
-        uid
-      });
-
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      await user.save();
-
-      const payload = {
-        user: {
-          id: user.id
-        }
-      };
-      jwt.sign(
-        payload,
-        config.get("jwtSecret"),
-        { expiresIn: 360000 },
-        (err, token) => {
-          if (err) throw err;
-          res.json({ token });
-        }
-      );
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server error");
-    }
+router.post('/', auth, admin, validateUser, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-);
 
-router.get("/", async (req, res) => {
+  const { name, username, password, uid, role } = req.body;
+  const accountPassword = password || `${randomBytes(12).toString('base64url')}Aa1!`;
+
   try {
-    const user = await User.find().select("-password");
-    if (!user) return res.status(400).json({ msg: "User not Found" });
+    if (await User.findOne({ username })) {
+      return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+    }
+
+    const user = new User({ name, username, password: accountPassword, uid, role });
+    user.password = await bcrypt.hash(accountPassword, await bcrypt.genSalt(10));
+    await user.save();
+
+    res.status(201).json({
+      user: { id: user.id, name, username, uid, role },
+      credentials: { username, password: accountPassword }
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+router.get('/', auth, async (req, res) => {
+  try {
+    const viewer = await User.findById(req.user.id).select('role');
+    if (!viewer || !['admin', 'instructor'].includes(viewer.role)) {
+      return res.status(403).json({ msg: 'Course management access required' });
+    }
+
+    const query = viewer.role === 'admin' ? {} : { role: 'user' };
+    const users = await User.find(query).select('-password').sort({ name: 1 });
+    res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.put('/:id', auth, admin, async (req, res) => {
+  const { name, username, uid, role, password } = req.body;
+
+  if (!name || !username || !uid || !['admin', 'instructor', 'user'].includes(role)) {
+    return res.status(400).json({ msg: 'Name, username, user ID and a valid role are required' });
+  }
+  if (req.params.id === req.user.id && role !== 'admin') {
+    return res.status(400).json({ msg: 'You cannot remove your own admin role' });
+  }
+
+  try {
+    const duplicate = await User.findOne({ username, _id: { $ne: req.params.id } });
+    if (duplicate) return res.status(400).json({ msg: 'Username already exists' });
+
+    const update = { name, username, uid, role };
+    if (password) update.password = await bcrypt.hash(password, await bcrypt.genSalt(10));
+
+    const user = await User.findByIdAndUpdate(req.params.id, { $set: update }, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ msg: 'User not found' });
     res.json(user);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send('Server Error');
+  }
+});
+
+router.delete('/:id', auth, admin, async (req, res) => {
+  if (req.params.id === req.user.id) {
+    return res.status(400).json({ msg: 'You cannot delete your own account' });
+  }
+
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    res.json({ id: user.id });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 

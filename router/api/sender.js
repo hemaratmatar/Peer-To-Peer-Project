@@ -36,8 +36,7 @@ router.post("/app",auth,async (req,res)=>{
     try {
         const know  = await Know.findOneAndUpdate({title:title,discription:discription},{$set:kn},{new:true});
         const send = await Sender.findOneAndUpdate({title:title,discription:discription},{$set:kn},{new:true})
-        res.json(send);
-        res.json(know);
+        res.json({ sender: send, course: know });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");

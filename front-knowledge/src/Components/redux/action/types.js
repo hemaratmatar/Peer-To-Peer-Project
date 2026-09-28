@@ -4,6 +4,9 @@ export const REMOVE_ALERT = "REMOVE_ALERT";
 export const USER_ERROR = "USER_ERROR";
 export const GET_ALLUSER = "GET_ALLUSER";
 export const CLEAR_USER = "CLEAR_USER";
+export const USER_CREATED = "USER_CREATED";
+export const USER_DELETED = "USER_DELETED";
+export const USER_UPDATED = "USER_UPDATED";
 
 export const LOGOUT = "LOGOUT";
 export const LOGIN_FAIL = "LOGIN_FAIL";
@@ -27,6 +30,7 @@ export const SHOW_KNOW = "SHOW_KNOW";
 export const SHOW_IDKNOW = "SHOW_IDKNOW";
 
 export const EDIT_KNOW ="EDIT_KNOW";
+export const DELETE_KNOWLEDGE = "DELETE_KNOWLEDGE";
 
 export const SHOW_APPLY = "SHOW_APPLY";
 export const GET_APPLY = "GET_APPLY";

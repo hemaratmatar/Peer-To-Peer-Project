@@ -1,0 +1,49 @@
+.course-form-shell { max-width: 980px; margin: 0 auto; padding: 38px 24px 70px; }
+.form-page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+.form-page-heading h1 { margin: 6px 0 7px; color: #17233c; font-size: 34px; font-weight: 800; letter-spacing: -.03em; }
+.form-page-heading p { max-width: 650px; margin: 0; color: #718096; font-size: 14px; line-height: 1.7; }
+.secondary-action { padding: 10px 15px; border: 1px solid #d9e1ec; border-radius: 10px; background: #fff; color: #526178; font-weight: 700; font-size: 13px; cursor: pointer; }
+.secondary-action:hover { border-color: #f4a3d3; color: #ec008c; }
+.course-form-card { overflow: hidden; border: 1px solid #e2e8f0; border-radius: 18px; background: #fff; box-shadow: 0 12px 36px rgba(15, 23, 42, .05); }
+.form-section { padding: 28px 32px; border-bottom: 1px solid #e9eef5; }
+.form-section--muted { background: #f8fafc; }
+.form-section__intro { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 24px; }
+.form-section__intro h2 { margin: 1px 0 4px; color: #1d2a43; font-size: 18px; font-weight: 800; }
+.form-section__intro p { margin: 0; color: #8290a4; font-size: 12px; }
+.form-step { width: 34px; height: 34px; flex: 0 0 34px; display: grid; place-items: center; border-radius: 10px; background: #ffe1f2; color: #c90078; font-size: 11px; font-weight: 800; }
+.form-step--cyan { background: #cffafe; color: #0e7490; }
+.form-step--gray { background: #e8edf3; color: #64748b; }
+.form-grid { display: grid; gap: 20px; }
+.form-grid--two { grid-template-columns: 1fr 1fr; }
+.field { display: flex; flex-direction: column; gap: 8px; color: #334155; font-size: 13px; font-weight: 700; }
+.field em { color: #dc2626; font-style: normal; }
+.field input,
+.field textarea,
+.field select { width: 100%; margin: 0; padding: 12px 13px; border: 1px solid #d8e0eb; border-radius: 10px; background: #fff; color: #1f2d44; font: inherit; font-weight: 500; outline: none; transition: border .2s, box-shadow .2s; }
+.field input { height: 46px; }
+.field textarea { min-height: 130px; resize: vertical; line-height: 1.6; }
+.field select { height: 46px; }
+.field select[multiple] { height: 142px; padding: 8px; }
+.field select[multiple] option { padding: 8px; border-radius: 5px; }
+.field input:focus,
+.field textarea:focus,
+.field select:focus { border-color: #ec008c; box-shadow: 0 0 0 3px rgba(236, 0, 140, .1); }
+.field small { color: #94a0b2; font-size: 10px; font-weight: 500; }
+.upload-placeholder { display: flex; align-items: center; gap: 14px; padding: 18px; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; }
+.upload-placeholder div { flex: 1; }
+.upload-placeholder strong { color: #475569; font-size: 13px; }
+.upload-placeholder p { margin: 3px 0 0; font-size: 11px; }
+.coming-soon { padding: 6px 8px; border-radius: 20px; background: #e2e8f0; color: #64748b; font-size: 9px; font-weight: 800; letter-spacing: .08em; }
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 20px 32px; background: #fbfcfe; }
+.form-submit { border: 0; cursor: pointer; }
+
+@media (max-width: 680px) {
+  .course-form-shell { padding: 26px 16px 50px; }
+  .form-page-heading { align-items: flex-start; flex-direction: column; }
+  .form-page-heading h1 { font-size: 28px; }
+  .form-section { padding: 23px 18px; }
+  .form-grid--two { grid-template-columns: 1fr; }
+  .upload-placeholder { align-items: flex-start; flex-wrap: wrap; }
+  .coming-soon { margin-left: 0; }
+  .form-actions { padding: 18px; }
+}

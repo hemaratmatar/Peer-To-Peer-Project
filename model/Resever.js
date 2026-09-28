@@ -19,4 +19,4 @@ const resevSchema = new mongoose.Schema({
     }
 });
 
-module.exports = Resever = mongoose.model("resever", resevSchema);
+module.exports = mongoose.model("resever", resevSchema);

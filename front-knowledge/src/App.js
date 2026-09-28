@@ -9,6 +9,12 @@ import Addknow from "./Components/Knowledge/Addknow";
 import { Provider } from "react-redux";
 import store from "./Components/redux/store";
 import editknow from "./Components/Knowledge/editknow";
+import UserManagement from "./Components/Admin/UserManagement";
+import CourseCatalog from "./Components/Courses/CourseCatalog";
+import CourseDetail from "./Components/Courses/CourseDetail";
+import { loadUser } from "./Components/redux/action/auth";
+
+store.dispatch(loadUser());
 const App = () => (
   <Provider store={store}>
     <Fragment>
@@ -16,8 +22,11 @@ const App = () => (
       <Route exact path="/" component={Login} />
       <Route exact path="/login" component={Login} />
       <PrivateRoute path="/home" component={Home} />
-      <PrivateRoute path="/addknow" component={Addknow} />
-      <PrivateRoute path="/edit-knowledge/:id" component={editknow} />
+      <PrivateRoute exact path="/courses" component={CourseCatalog} />
+      <PrivateRoute path="/courses/:id" component={CourseDetail} />
+      <PrivateRoute path="/addknow" component={Addknow} managerOnly />
+      <PrivateRoute path="/edit-knowledge/:id" component={editknow} managerOnly />
+      <PrivateRoute path="/users" component={UserManagement} adminOnly />
       <PrivateRoute path="/apply/:id" component={Home} />
     </Fragment>
   </Provider>

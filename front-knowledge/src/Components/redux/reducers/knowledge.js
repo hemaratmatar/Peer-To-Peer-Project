@@ -1,4 +1,4 @@
-import { ADD_KNOWLEDGE, ADD_ERROR, SHOWALL_KNOW,SHOW_KNOW,EDIT_KNOW } from "../action/types";
+import { ADD_KNOWLEDGE, ADD_ERROR, SHOWALL_KNOW,SHOW_KNOW,EDIT_KNOW,DELETE_KNOWLEDGE } from "../action/types";
 
 const initialState = {
   knowledge: null,
@@ -31,7 +31,13 @@ export default function(state = initialState, action) {
         ...state,
         know:payload,
         loading: false
-      }    
+      }
+    case DELETE_KNOWLEDGE:
+      return {
+        ...state,
+        knowledge: (state.knowledge || []).filter(course => course._id !== payload),
+        loading: false
+      }
       case ADD_ERROR:
       return {
         ...state,
