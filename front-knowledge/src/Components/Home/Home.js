@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Popconfirm } from 'antd';
+import { Popconfirm, message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Navbar2 from '../Navbar/navbar';
 import { deleteKnowledge, getKnowledge } from '../redux/action/knowledge';
+import { errorMessage } from '../redux/utils/errorPayload';
+import { studentCount } from '../Courses/courseUtils';
 import { getResever } from '../redux/action/resever';
 import { getSender } from '../redux/action/sender';
 import './Home.css';
@@ -33,6 +35,13 @@ const Home = ({
   }, [getKnowledge, getResever, getSender]);
 
   const courses = knowledge || [];
+  const onDelete = async id => {
+    try {
+      await deleteKnowledge(id);
+    } catch (err) {
+      message.error(errorMessage(err, 'ไม่สามารถลบหลักสูตรได้'));
+    }
+  };
   const learning = resever || [];
   const teaching = sender || [];
   const isAdmin = user && user.role === 'admin';
@@ -101,7 +110,7 @@ const Home = ({
                       <span className={`status-pill ${course.status === 'true' ? 'is-live' : 'is-draft'}`}>
                         {course.status === 'true' ? 'เปิดใช้งาน' : 'ฉบับร่าง'}
                       </span>
-                      <span>{course.students ? course.students.length : 0} ผู้เรียน</span>
+                      <span>{studentCount(course)} ผู้เรียน</span>
                       <span className={`status-pill ${course.completionStatus === 'completed' ? 'is-completed' : 'is-ongoing'}`}>
                         {course.completionStatus === 'completed' ? 'จบหลักสูตรแล้ว' : 'กำลังดำเนินการ'}
                       </span>
@@ -115,7 +124,7 @@ const Home = ({
                         {canManage && (
                           <React.Fragment>
                           <Link to={`/edit-knowledge/${course._id}`}>แก้ไข</Link>
-                          <Popconfirm icon={null} title="ลบหลักสูตรนี้หรือไม่?" onConfirm={() => deleteKnowledge(course._id)} okText="ลบ" cancelText="ยกเลิก">
+                          <Popconfirm icon={null} title="ลบหลักสูตรนี้หรือไม่?" onConfirm={() => onDelete(course._id)} okText="ลบ" cancelText="ยกเลิก">
                             <button type="button">ลบ</button>
                           </Popconfirm>
                           </React.Fragment>

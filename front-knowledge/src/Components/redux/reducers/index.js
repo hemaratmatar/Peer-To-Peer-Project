@@ -5,7 +5,9 @@ import users from './user';
 import knowledge from './knowledge';
 import resever from './resever'
 import sender from './sender'
-export default combineReducers({
+import { LOGOUT } from "../action/types";
+
+const appReducer = combineReducers({
   alert,
   auth,
   users,
@@ -13,3 +15,6 @@ export default combineReducers({
   resever,
   sender
 });
+
+// Drop every slice on logout so the next account never sees the previous one's data
+export default (state, action) => appReducer(action.type === LOGOUT ? undefined : state, action);

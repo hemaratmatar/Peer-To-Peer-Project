@@ -1,10 +1,7 @@
-import { GETALL_SENDER , GETSENDER_ERROR , GET_APPLY  } from "../action/types";
+import { GETALL_SENDER, GETSENDER_ERROR } from "../action/types";
 
 const initialState = {
   sender: null,
-  send:null,
-  senders: [],
-  repos: [],
   loading: true,
   error: {}
 };
@@ -26,12 +23,6 @@ export default function(state = initialState, action) {
         loading: false,
         sender: null
       };
-      case GET_APPLY:
-        return{
-          ...state,
-          send:payload,
-          loading: false
-        }
     default:
       return state;
   }

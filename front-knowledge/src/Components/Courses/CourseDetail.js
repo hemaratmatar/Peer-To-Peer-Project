@@ -1,35 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Popconfirm } from 'antd';
+import { Popconfirm, message } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Navbar2 from '../Navbar/navbar';
 import { addLesson, deleteLesson, getKnowbyID, updateLesson } from '../redux/action/knowledge';
+import { errorMessage } from '../redux/utils/errorPayload';
+import { studentCount, youtubeVideoId } from './courseUtils';
 import '../Home/Home.css';
 import '../Knowledge/CourseForm.css';
 import './CourseDetail.css';
 
 const emptyLesson = { title: '', content: '', youtubeUrl: '' };
 
-const youtubeEmbedUrl = value => {
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    const host = url.hostname.replace('www.', '');
-    let videoId = '';
-    if (host === 'youtu.be') videoId = url.pathname.slice(1);
-    if (host === 'youtube.com' || host === 'm.youtube.com') {
-      videoId = url.searchParams.get('v') || url.pathname.split('/').filter(Boolean).pop();
-    }
-    return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : null;
-  } catch (err) {
-    return null;
-  }
-};
-
 const CourseDetail = ({
   auth: { user },
-  knowledge: { know, loading },
+  knowledge: { know, loading, error },
   match,
   getKnowbyID,
   addLesson,
@@ -71,8 +57,15 @@ const CourseDetail = ({
       else await addLesson(courseId, form);
       closeForm();
     } catch (err) {
-      const data = err.response && err.response.data;
-      setFormError(data && data.errors ? data.errors[0].msg : 'ไม่สามารถบันทึกบทเรียนได้');
+      setFormError(errorMessage(err, 'ไม่สามารถบันทึกบทเรียนได้'));
+    }
+  };
+
+  const onDeleteLesson = async lessonId => {
+    try {
+      await deleteLesson(courseId, lessonId);
+    } catch (err) {
+      message.error(errorMessage(err, 'ไม่สามารถลบบทเรียนได้'));
     }
   };
 
@@ -83,6 +76,15 @@ const CourseDetail = ({
     setFormError('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (!course && error && error.id === courseId) {
+    return (
+      <div className="learning-app"><Navbar2 /><main className="lesson-shell">
+        <Link className="text-back-link" to="/courses">กลับไปหลักสูตรทั้งหมด</Link>
+        <div className="catalog-empty"><strong>ไม่พบหลักสูตร</strong><p>หลักสูตรนี้อาจถูกลบ หรือคุณไม่มีสิทธิ์เข้าถึง</p></div>
+      </main></div>
+    );
+  }
 
   if (loading || !course) {
     return <div className="learning-app"><Navbar2 /><main className="lesson-shell"><div className="catalog-empty"><strong>กำลังโหลดหลักสูตร</strong></div></main></div>;
@@ -102,7 +104,7 @@ const CourseDetail = ({
             <div className="lesson-hero__meta">
               <span>ผู้สอน: {course.sender && course.sender.name ? course.sender.name : 'ยังไม่ระบุ'}</span>
               <span>{lessons.length} บทเรียน</span>
-              <span>{course.students ? course.students.length : 0} ผู้เรียน</span>
+              <span>{studentCount(course)} ผู้เรียน</span>
               <span>{course.status === 'true' ? 'เปิดใช้งาน' : 'ฉบับร่าง'}</span>
               <span>{course.completionStatus === 'completed' ? 'จบหลักสูตรแล้ว' : 'กำลังดำเนินการ'}</span>
             </div>
@@ -146,7 +148,7 @@ const CourseDetail = ({
           </div>
 
           {lessons.length ? lessons.map(lesson => {
-            const embedUrl = youtubeEmbedUrl(lesson.youtubeUrl);
+            const videoId = youtubeVideoId(lesson.youtubeUrl);
             return (
               <article className="lesson-card" key={lesson._id}>
                 <div className="lesson-card__heading">
@@ -155,17 +157,17 @@ const CourseDetail = ({
                   {canManage && (
                     <div className="lesson-card__actions">
                       <button type="button" onClick={() => startEdit(lesson)}>แก้ไข</button>
-                      <Popconfirm icon={null} title="ลบบทเรียนนี้หรือไม่?" onConfirm={() => deleteLesson(courseId, lesson._id)} okText="ลบ" cancelText="ยกเลิก">
+                      <Popconfirm icon={null} title="ลบบทเรียนนี้หรือไม่?" onConfirm={() => onDeleteLesson(lesson._id)} okText="ลบ" cancelText="ยกเลิก">
                         <button className="is-danger" type="button">ลบ</button>
                       </Popconfirm>
                     </div>
                   )}
                 </div>
                 <div className="lesson-card__content"><p>{lesson.content}</p></div>
-                {embedUrl && (
+                {videoId && (
                   <div className="lesson-video">
-                    <iframe src={embedUrl} title={lesson.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                    <a href={lesson.youtubeUrl} target="_blank" rel="noopener noreferrer">เปิดวิดีโอบน YouTube</a>
+                    <iframe src={`https://www.youtube-nocookie.com/embed/${videoId}`} title={lesson.title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer">เปิดวิดีโอบน YouTube</a>
                   </div>
                 )}
               </article>

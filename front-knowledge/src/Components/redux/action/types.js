@@ -27,13 +27,10 @@ export const GETSENDER_ERROR = "GETSENDER_ERROR";
 
 export const SHOWALL_KNOW = "SHOWALL_KNOW";
 export const SHOW_KNOW = "SHOW_KNOW";
-export const SHOW_IDKNOW = "SHOW_IDKNOW";
+export const KNOW_ERROR = "KNOW_ERROR";
 
 export const EDIT_KNOW ="EDIT_KNOW";
 export const DELETE_KNOWLEDGE = "DELETE_KNOWLEDGE";
-
-export const SHOW_APPLY = "SHOW_APPLY";
-export const GET_APPLY = "GET_APPLY";
 // export const GET_POSTS = 'GET_POSTS';
 // export const GET_POST = 'GET_POST';
 // export const POST_ERROR = 'POST_ERROR';

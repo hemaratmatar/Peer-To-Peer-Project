@@ -3,115 +3,65 @@ import {
   ADD_KNOWLEDGE,
   ADD_ERROR,
   SHOWALL_KNOW,
-  GETALL_ERROR,
   SHOW_KNOW,
+  KNOW_ERROR,
   EDIT_KNOW,
   DELETE_KNOWLEDGE
 } from "./types";
-export const addKnowledge = (
-  formKnow,
-  history,
-  edit = false
-) => async dispatch => {
+import errorPayload from "../utils/errorPayload";
+
+const jsonConfig = { headers: { "Content-Type": "application/json" } };
+
+// Records the error in the store and rethrows so the caller can show it
+const failed = (dispatch, err) => {
+  dispatch({ type: ADD_ERROR, payload: errorPayload(err) });
+  throw err;
+};
+
+export const addKnowledge = (formKnow, history) => async dispatch => {
   try {
-    const config = {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    const res = await axios.post("/api/know", formKnow, config);
-    dispatch({
-      type: ADD_KNOWLEDGE,
-      payload: res.data
-    });
-    // dispatch(setAlert(edit ? 'Knowledge Updated' : 'Knowledge Add', 'success'));
-    if (!edit) {
-      history.push("/home");
-    }
+    const res = await axios.post("/api/know", formKnow, jsonConfig);
+    dispatch({ type: ADD_KNOWLEDGE, payload: res.data });
+    history.push("/home");
   } catch (err) {
-    // const errors = err.response.data.errors;
-    // if (errors){
-    //     errors.forEach(error => dispatch(setAlert(error.msg,'danger')));
-    // }
-    dispatch({
-      type: ADD_ERROR,
-      payload: {
-        msg: err.response ? err.response.statusText : err.message,
-        status: err.response ? err.response.status : 500
-      }
-    });
+    failed(dispatch, err);
   }
 };
 
 export const getKnowledge = () => async dispatch => {
   try {
     const res = await axios.get("/api/know");
-
-    dispatch({
-      type: SHOWALL_KNOW,
-      payload: res.data
-    });
+    dispatch({ type: SHOWALL_KNOW, payload: res.data });
   } catch (err) {
-    dispatch({
-      type: GETALL_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status }
-    });
+    dispatch({ type: ADD_ERROR, payload: errorPayload(err) });
   }
 };
 
-export const getKnowbyID = _id => async dispatch => {
+export const getKnowbyID = id => async dispatch => {
   try {
-    const res = await axios.get(`/api/know/${_id}`);
-    dispatch({
-      type: SHOW_KNOW,
-      payload: res.data
-    });
+    const res = await axios.get(`/api/know/${id}`);
+    dispatch({ type: SHOW_KNOW, payload: res.data });
   } catch (err) {
-    dispatch({
-      type: GETALL_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status }
-    });
+    dispatch({ type: KNOW_ERROR, payload: { ...errorPayload(err), id } });
   }
 };
 
-//edit knowledge on
-export const editKnowledge =(formKnows,history)=> async dispatch =>{
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          'x-auth-token': localStorage.token
-        }
-      };
-        const res = await axios.post('/api/know/editknow',formKnows,config);
-      dispatch({
-        type: EDIT_KNOW ,
-        payload: res.data
-      });
-      history.push("/home");
-    } catch (err) {
-        dispatch({
-            type: ADD_ERROR,
-            payload: {
-              msg: err.response ? err.response.statusText : err.message,
-              status: err.response ? err.response.status : 500
-            }
-        });
-    }
-}
+export const editKnowledge = (formKnows, history) => async dispatch => {
+  try {
+    const res = await axios.post("/api/know/editknow", formKnows, jsonConfig);
+    dispatch({ type: EDIT_KNOW, payload: res.data });
+    history.push("/home");
+  } catch (err) {
+    failed(dispatch, err);
+  }
+};
 
 export const deleteKnowledge = id => async dispatch => {
   try {
     await axios.delete(`/api/know/${id}`);
     dispatch({ type: DELETE_KNOWLEDGE, payload: id });
   } catch (err) {
-    dispatch({
-      type: ADD_ERROR,
-      payload: {
-        msg: err.response ? err.response.statusText : err.message,
-        status: err.response ? err.response.status : 500
-      }
-    });
+    failed(dispatch, err);
   }
 };
 
@@ -121,14 +71,7 @@ const lessonRequest = async (request, dispatch) => {
     dispatch({ type: SHOW_KNOW, payload: res.data });
     return res.data;
   } catch (err) {
-    dispatch({
-      type: ADD_ERROR,
-      payload: {
-        msg: err.response ? err.response.statusText : err.message,
-        status: err.response ? err.response.status : 500
-      }
-    });
-    throw err;
+    return failed(dispatch, err);
   }
 };
 

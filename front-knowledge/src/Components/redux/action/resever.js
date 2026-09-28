@@ -1,14 +1,10 @@
 import axios from "axios";
 import { GETALL_RESEVER, GETALL_ERROR } from "./types";
+import errorPayload from "../utils/errorPayload";
 
-export const getResever = (token) => async dispatch => {
+export const getResever = () => async dispatch => {
   try {
-    const config ={
-      headers:{
-          'x-auth-token': localStorage.token
-      }
-  };
-    const res = await axios.get('/api/resever',config);
+    const res = await axios.get('/api/resever');
     dispatch({
       type: GETALL_RESEVER,
       payload: res.data
@@ -16,7 +12,7 @@ export const getResever = (token) => async dispatch => {
   } catch (err) {
     dispatch({
       type: GETALL_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status }
+      payload: errorPayload(err)
     });
   }
 };

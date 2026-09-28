@@ -7,11 +7,7 @@ import {
   USER_DELETED,
   USER_UPDATED
 } from './types';
-
-const errorPayload = err => ({
-  msg: err.response ? err.response.statusText : err.message,
-  status: err.response ? err.response.status : 500
-});
+import errorPayload from '../utils/errorPayload';
 
 export const getUser = () => async dispatch => {
   dispatch({ type: CLEAR_USER });
@@ -43,6 +39,7 @@ export const deleteUser = id => async dispatch => {
     dispatch({ type: USER_DELETED, payload: id });
   } catch (err) {
     dispatch({ type: USER_ERROR, payload: errorPayload(err) });
+    throw err;
   }
 };
 
