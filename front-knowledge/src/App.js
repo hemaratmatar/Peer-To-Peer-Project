@@ -27,7 +27,6 @@ const App = () => (
       <PrivateRoute path="/addknow" component={Addknow} managerOnly />
       <PrivateRoute path="/edit-knowledge/:id" component={editknow} managerOnly />
       <PrivateRoute path="/users" component={UserManagement} adminOnly />
-      <PrivateRoute path="/apply/:id" component={Home} />
     </Fragment>
   </Provider>
 );

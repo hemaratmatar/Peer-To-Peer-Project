@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Navbar2 from '../Navbar/navbar';
 import { editKnowledge, getKnowbyID } from '../redux/action/knowledge';
 import { getUser } from '../redux/action/user';
+import { errorMessage } from '../redux/utils/errorPayload';
 import './CourseForm.css';
 
 const Editknow = ({
@@ -15,6 +16,8 @@ const Editknow = ({
     id: courseId, title: '', discription: '', instructor: '', students: [],
     status: 'false', completionStatus: 'ongoing'
   });
+
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     getKnowbyID(courseId);
@@ -58,9 +61,15 @@ const Editknow = ({
     setForm(current => ({ ...current, students: selected }));
   };
 
-  const onSubmit = event => {
+  const onSubmit = async event => {
     event.preventDefault();
-    editKnowledge(form, history);
+    setFormError('');
+    try {
+      await editKnowledge(form, history);
+    } catch (err) {
+      setFormError(errorMessage(err, 'ไม่สามารถบันทึกหลักสูตรได้'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -77,6 +86,7 @@ const Editknow = ({
         </header>
 
         <form className="course-form-card" onSubmit={onSubmit}>
+          {formError && <div className="form-error">{formError}</div>}
           <section className="form-section">
             <div className="form-section__intro">
               <span className="form-step">01</span>
@@ -84,7 +94,7 @@ const Editknow = ({
             </div>
             <div className="form-grid">
               <label className="field"><span>ชื่อหลักสูตร</span><input name="title" value={form.title} onChange={onChange} required /></label>
-              <label className="field"><span>รายละเอียดหลักสูตร</span><textarea name="discription" rows="6" value={form.discription} onChange={onChange} required /></label>
+              <label className="field"><span>รายละเอียดหลักสูตร</span><textarea name="discription" rows="6" value={form.discription} onChange={onChange} maxLength="500" required /></label>
             </div>
           </section>
 

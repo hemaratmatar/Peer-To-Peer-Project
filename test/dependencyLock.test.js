@@ -31,6 +31,6 @@ test('runtime, dependencies, lockfiles and environment keys stay synchronized', 
   assert.equal(fs.existsSync(path.join(root, 'front-knowledge/package-lock.json')), false);
   assert.equal(fs.readFileSync(path.join(root, '.nvmrc'), 'utf8').trim(), rootPackage.engines.node);
   assert.equal(rootPackage.packageManager, `npm@${rootPackage.engines.npm}`);
-  assert.deepEqual(envKeys('.env.example'), ['MONGODB_DB', 'MONGODB_URI', 'PORT']);
-  assert.deepEqual(envKeys('.env'), ['MONGODB_DB', 'MONGODB_URI', 'PORT']);
+  assert.deepEqual(envKeys('.env.example'), ['JWT_SECRET', 'MONGODB_DB', 'MONGODB_URI', 'PORT']);
+  assert.deepEqual(envKeys('.env'), ['JWT_SECRET', 'MONGODB_DB', 'MONGODB_URI', 'PORT']);
 });

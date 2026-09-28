@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Navbar2 from '../Navbar/navbar';
 import { addKnowledge } from '../redux/action/knowledge';
 import { getUser } from '../redux/action/user';
+import { errorMessage } from '../redux/utils/errorPayload';
 import './CourseForm.css';
 
 const Addknow = ({ addKnowledge, getUser, auth: { user: authUser }, user: { users }, history }) => {
@@ -15,6 +16,8 @@ const Addknow = ({ addKnowledge, getUser, auth: { user: authUser }, user: { user
     status: 'false',
     completionStatus: 'ongoing'
   });
+
+  const [formError, setFormError] = useState('');
 
   useEffect(() => { getUser(); }, [getUser]);
 
@@ -43,9 +46,15 @@ const Addknow = ({ addKnowledge, getUser, auth: { user: authUser }, user: { user
     setFormKnow(current => ({ ...current, students: selected }));
   };
 
-  const onSubmit = event => {
+  const onSubmit = async event => {
     event.preventDefault();
-    addKnowledge(formKnow, history);
+    setFormError('');
+    try {
+      await addKnowledge(formKnow, history);
+    } catch (err) {
+      setFormError(errorMessage(err, 'ไม่สามารถสร้างหลักสูตรได้'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -62,6 +71,7 @@ const Addknow = ({ addKnowledge, getUser, auth: { user: authUser }, user: { user
         </header>
 
         <form className="course-form-card" onSubmit={onSubmit}>
+          {formError && <div className="form-error">{formError}</div>}
           <section className="form-section">
             <div className="form-section__intro">
               <span className="form-step">01</span>
@@ -90,6 +100,7 @@ const Addknow = ({ addKnowledge, getUser, auth: { user: authUser }, user: { user
                   placeholder="อธิบายหัวข้อสำคัญ ผลลัพธ์การเรียนรู้ และกลุ่มผู้เรียนที่เหมาะสม"
                   value={formKnow.discription}
                   onChange={onChange}
+                  maxLength="500"
                   required
                 />
                 <small>{formKnow.discription.length}/500 ตัวอักษร</small>

@@ -13,7 +13,8 @@
   "packageManager": "npm@11.19.0",
   "main": "server.js",
   "scripts": {
-    "test": "node --test test/coursePermissions.test.js test/dependencyLock.test.js",
+    "test": "node --test test/coursePermissions.test.js test/validation.test.js test/dependencyLock.test.js",
+    "create-admin": "node --no-deprecation scripts/create-admin.js",
     "start": "node --no-deprecation server",
     "server": "nodemon --exec \"node --no-deprecation\" server",
     "client": "npm start --workspace front-knowledge",

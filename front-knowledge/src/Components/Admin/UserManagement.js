@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Popconfirm } from 'antd';
+import { Popconfirm, message } from 'antd';
 import PropTypes from 'prop-types';
 import Navbar2 from '../Navbar/navbar';
 import { createUser, deleteUser, getUser, updateUser } from '../redux/action/user';
+import { errorMessage } from '../redux/utils/errorPayload';
 import './UserManagement.css';
 
 const emptyForm = { name: '', username: '', uid: '', role: 'user', password: '' };
@@ -38,8 +39,15 @@ const UserManagement = ({
       setIsFormOpen(false);
       setEditingId(null);
     } catch (err) {
-      const data = err.response && err.response.data;
-      setFormError(data && data.errors ? data.errors[0].msg : data && data.msg ? data.msg : 'ไม่สามารถบันทึกข้อมูลผู้ใช้ได้');
+      setFormError(errorMessage(err, 'ไม่สามารถบันทึกข้อมูลผู้ใช้ได้'));
+    }
+  };
+
+  const onDelete = async id => {
+    try {
+      await deleteUser(id);
+    } catch (err) {
+      message.error(errorMessage(err, 'ไม่สามารถลบผู้ใช้ได้'));
     }
   };
 
@@ -146,7 +154,7 @@ const UserManagement = ({
                       <td className="users-table__action">
                         <button className="edit-user" type="button" onClick={() => openEditForm(user)}>แก้ไข</button>
                         {id !== currentUserId && (
-                          <Popconfirm icon={null} title="ลบบัญชีนี้หรือไม่?" onConfirm={() => deleteUser(id)} okText="ลบ" cancelText="ยกเลิก">
+                          <Popconfirm icon={null} title="ลบบัญชีนี้หรือไม่?" onConfirm={() => onDelete(id)} okText="ลบ" cancelText="ยกเลิก">
                             <button className="delete-user" type="button">ลบ</button>
                           </Popconfirm>
                         )}

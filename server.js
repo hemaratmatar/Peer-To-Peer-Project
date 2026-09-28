@@ -1,10 +1,23 @@
-process.loadEnvFile();
+try {
+    process.loadEnvFile();
+} catch (err) {
+    console.error('.env file not found - copy .env.example to .env');
+    process.exit(1);
+}
 
 const express = require('express');
 const connectDB = require('./config/db');
+const jwtSecret = require('./utils/jwtSecret');
 const app = express();
 
-app.use(express.json({extended: false}));
+try {
+    jwtSecret();
+} catch (err) {
+    console.error(err.message);
+    process.exit(1);
+}
+
+app.use(express.json());
 app.get('/',(req,res)=> res.send('API Running'));
 
 

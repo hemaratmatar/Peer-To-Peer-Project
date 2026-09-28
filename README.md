@@ -34,6 +34,7 @@
 MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority"
 MONGODB_DB="knowlegegsb"
 PORT=5001
+JWT_SECRET="<long-random-string>"
 ```
 
 | ตัวแปร | จำเป็น | ค่าปริยาย | จุดที่ใช้ |
@@ -41,6 +42,9 @@ PORT=5001
 | `MONGODB_URI` | ใช่ | ไม่มี | connection string ใน `config/db.js` |
 | `MONGODB_DB` | ไม่ | `knowlegegsb` | ชื่อฐานข้อมูลใน `config/db.js` |
 | `PORT` | ไม่ | `5001` | พอร์ต backend ใน `server.js` |
+| `JWT_SECRET` | ใช่ | ไม่มี | ใช้ลงนาม token ใน `utils/jwtSecret.js` — server จะไม่ start ถ้าไม่กำหนด |
+
+สร้างค่า `JWT_SECRET` แบบสุ่มได้ด้วย `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"` การเปลี่ยนค่านี้จะทำให้ผู้ใช้ทุกคนต้อง login ใหม่
 
 `NODE_ENV` และ `PUBLIC_URL` เป็นค่าที่ Create React App จัดการเอง ไม่ต้องใส่ใน `.env` ของ backend และห้าม commit `.env` เพราะมีข้อมูลเชื่อมต่อฐานข้อมูล
 
@@ -54,6 +58,16 @@ npm run dev
 - Frontend: [http://localhost:3000](http://localhost:3000)
 - Backend: [http://localhost:5001](http://localhost:5001)
 - MongoDB Compass ใช้ค่า `MONGODB_URI` เดียวกับ backend
+
+### สร้างบัญชี Admin คนแรก
+
+ระบบไม่มีหน้าสมัครสมาชิก บัญชีทั้งหมดสร้างโดย Admin ดังนั้นต้องสร้าง Admin คนแรกจาก command line:
+
+```powershell
+npm run create-admin -- <username> "<ชื่อ-นามสกุล>" <รหัสพนักงาน> [password]
+```
+
+ถ้าไม่ระบุ password ระบบจะสร้างรหัสที่ปลอดภัยและแสดงเพียงครั้งเดียว
 
 ## คำสั่งตรวจสอบ
 
